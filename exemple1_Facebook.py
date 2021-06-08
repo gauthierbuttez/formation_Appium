@@ -1,4 +1,8 @@
-def Initialisation_Driver(p_udid, p_systemPort, p_deviceName, p_version, p_os,p_label_log,lock):
+# Le module Appium
+# On utilisera le webdriver d'appium exactement de la même manière que celui de Selenium.
+from appium import webdriver
+
+def Initialisation_Driver(p_udid, p_systemPort, p_deviceName, p_version, p_os):
    
    desired_caps = {}
    desired_caps['automationName'] = 'UiAutomator2'
@@ -28,11 +32,11 @@ def Initialisation_Driver(p_udid, p_systemPort, p_deviceName, p_version, p_os,p_
 
        except Exception as ex:
            cpt_appium_start+=1
-           logger.critical(f"{p_udid}|||Something went wrong when initializing driver : {ex}")
-           logger.critical(
+           print(f"{p_udid}|||Something went wrong when initializing driver : {ex}")
+           print(
                f"{p_udid}|||We can't open Facebook. Please check if device is connected. Let's try again!")
            if str(ex).find('hang up')!=-1:
-               logger.error("PhoneBot caught the issue exception 'hang up' when initializing Driver!")
+               print("PhoneBot caught the issue exception 'hang up' when initializing Driver!")
                proc = subprocess.Popen(
                    f'adb -s {p_udid} uninstall io.appium.uiautomator2.server',
                    shell=True,
@@ -48,17 +52,24 @@ def Initialisation_Driver(p_udid, p_systemPort, p_deviceName, p_version, p_os,p_
                    stdin=None, stdout=None, stderr=None, close_fds=True)
 
            elif str(ex).find('Failed to establish a new connection')!=-1:
-               logger.critical(f"SMARTPHONE|||{p_udid}||Appium server may not be working. Please contact support@phonebot.co : {ex}")
-               logger.critical(
+               print(f"SMARTPHONE|||{p_udid}||Appium server may not be working. Please contact support@phonebot.co : {ex}")
+               print(
                    f"{p_udid}|||We can't open Facebook. Please check if device is connected. Let's try again!")
-               mymodules.DisplayMessageLogUI(p_label_log,
-                   f"SMARTPHONE|||{p_udid}||Appium server may not be working. Please contact support@phonebot.co : {ex}")
+               
 
            if cpt_appium_start > 3:
-               mymodules.PopupMessage("Error","PhoneBot couldn't initialize the driver. Please contact support@phonebot.co.")
-               mymodules.DisplayMessageLogUI(p_label_log,
-                                      "PhoneBot couldn't initialize the driver. Please contact support@phonebot.co.")
+               print("Error","PhoneBot couldn't initialize the driver. Please contact support@phonebot.co.")
+              
                return None
 
            time.sleep(random.uniform(2.5, 3.3))
+         
+         
+ # Exemple avec des informations propres à mon smartphone. A vous de mettre vos prospre paramètres de votre smartphone
+p_udid='OUKIC16PRO37851'
+p_systemPort='4723'
+p_deviceName='C16_Pro_EEA'
+p_version='9.0'
+p_os='Android'
 
+Initialisation_Driver(p_udid, p_systemPort, p_deviceName, p_version, p_os)
